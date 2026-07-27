@@ -32,6 +32,22 @@ npm run dev
 
 Server: `http://localhost:5000`
 
+## Deploy to Vercel
+
+1. Push to GitHub.
+2. Vercel → **New Project** → import repo.
+3. Set **Root Directory** to `gearup-backend`.
+4. Add environment variables: `DATABASE_URL`, `JWT_SECRET`, `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `BASE_URL`, `ADMIN_EMAIL`, `ADMIN_PASSWORD`, `ADMIN_NAME`.
+5. After first deploy, run the seed once via Vercel CLI:
+   ```
+   vercel env pull .env.vercel
+   npx prisma db push
+   npm run seed
+   ```
+6. Live URL: `https://your-app.vercel.app`
+
+> Use a hosted Postgres (Neon, Supabase, Render Postgres, Vercel Postgres).
+
 ## Admin Credentials
 
 ```

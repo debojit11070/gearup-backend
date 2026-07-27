@@ -4,23 +4,25 @@ import { authRouter } from './modules/auth/auth.routes';
 import { gearRouter } from './modules/gear/gear.routes';
 import { categoriesRouter } from './modules/categories/categories.routes';
 import { rentalsRouter } from './modules/rentals/rentals.routes';
-import { paymentsRouter, stripeWebhookRouter } from './modules/payments/payments.routes';
+import { paymentsRouter } from './modules/payments/payments.routes';
 import { reviewsRouter } from './modules/reviews/reviews.routes';
 import { providerRouter } from './modules/provider/provider.routes';
 import { adminRouter } from './modules/admin/admin.routes';
 import { errorHandler, notFoundHandler } from './middlewares/error';
 import { sendSuccess } from './utils/sendResponse';
+import { stripeWebhook } from './modules/payments/payments.controller';
 
 export const createApp = (): Application => {
   const app = express();
 
   app.use(cors());
 
-  // Stripe webhook needs raw body - mount before json parser
-  app.use('/api/payments/webhook', stripeWebhookRouter);
-
-  app.use(express.json({ limit: '2mb' }));
-  app.use(express.urlencoded({ extended: true }));
+  // Stripe webhook needs raw body - register before json parser
+  app.post(
+    '/api/payments/webhook/stripe',
+    express.raw({ type: 'application/json' }),
+    stripeWebhook
+  );
 
   app.get('/', (_req: Request, res: Response) => {
     sendSuccess(res, {

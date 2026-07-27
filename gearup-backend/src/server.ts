@@ -7,21 +7,25 @@ import prisma from './config/db';
 
 const app = createApp();
 
-const server = app.listen(config.port, () => {
-  console.log(`GearUp API running on http://localhost:${config.port}`);
-});
+export default app;
 
-const shutdown = async (signal: string) => {
-  console.log(`${signal} received. Shutting down...`);
-  server.close(async () => {
-    await prisma.$disconnect();
-    process.exit(0);
+if (require.main === module) {
+  const server = app.listen(config.port, () => {
+    console.log(`GearUp API running on http://localhost:${config.port}`);
   });
-};
 
-process.on('SIGINT', () => shutdown('SIGINT'));
-process.on('SIGTERM', () => shutdown('SIGTERM'));
+  const shutdown = async (signal: string) => {
+    console.log(`${signal} received. Shutting down...`);
+    server.close(async () => {
+      await prisma.$disconnect();
+      process.exit(0);
+    });
+  };
 
-process.on('unhandledRejection', (err) => {
-  console.error('UNHANDLED REJECTION:', err);
-});
+  process.on('SIGINT', () => shutdown('SIGINT'));
+  process.on('SIGTERM', () => shutdown('SIGTERM'));
+
+  process.on('unhandledRejection', (err) => {
+    console.error('UNHANDLED REJECTION:', err);
+  });
+}

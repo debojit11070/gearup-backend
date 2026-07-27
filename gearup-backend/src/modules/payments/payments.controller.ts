@@ -139,8 +139,13 @@ export const stripeWebhook = async (req: Request, res: Response, next: NextFunct
 
     let event: Stripe.Event;
     try {
+      const rawBody =
+        (req as unknown as { rawBody?: Buffer }).rawBody ??
+        (typeof req.body === 'string'
+          ? Buffer.from(req.body)
+          : Buffer.from(JSON.stringify(req.body)));
       event = stripe.webhooks.constructEvent(
-        (req as unknown as { rawBody: Buffer }).rawBody,
+        rawBody,
         sig,
         config.stripeWebhookSecret
       );
