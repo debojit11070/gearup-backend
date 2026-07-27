@@ -5,7 +5,6 @@ import { Role, UserStatus } from '@prisma/client';
 import prisma from '../config/db';
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Express {
     interface Request {
       user?: JwtPayload & { status: UserStatus };

@@ -31,7 +31,6 @@ export const errorHandler = (
     return;
   }
   if (err instanceof Error) {
-    // eslint-disable-next-line no-console
     console.error('[UNHANDLED ERROR]', err);
     res.status(500).json({
       success: false,

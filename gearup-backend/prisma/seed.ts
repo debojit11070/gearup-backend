@@ -23,7 +23,6 @@ async function main() {
       role: Role.ADMIN,
     },
   });
-  // eslint-disable-next-line no-console
   console.log(`Admin: ${admin.email} (password: ${adminPassword})`);
 
   // 2. Categories
@@ -42,7 +41,6 @@ async function main() {
       create: c,
     });
   }
-  // eslint-disable-next-line no-console
   console.log(`Categories seeded: ${categories.length}`);
 
   // 3. Sample provider + customer
@@ -72,9 +70,7 @@ async function main() {
       address: '456 Forest Ave',
     },
   });
-  // eslint-disable-next-line no-console
   console.log(`Sample provider: provider@gearup.com / Provider@123`);
-  // eslint-disable-next-line no-console
   console.log(`Sample customer: customer@gearup.com / Customer@123`);
 
   // 4. Sample gear
@@ -132,16 +128,11 @@ async function main() {
       await prisma.gearItem.create({ data: { ...g, providerId: provider.id } });
     }
   }
-  // eslint-disable-next-line no-console
   console.log(`Sample gear seeded: ${sampleGear.length} items`);
-
-  // Avoid unused-var warning for customer
-  void customer;
 }
 
 main()
   .catch((e) => {
-    // eslint-disable-next-line no-console
     console.error(e);
     process.exit(1);
   })
