@@ -1,5 +1,9 @@
-// Vercel serverless entrypoint - re-exports the compiled Express app.
-// Build step: tsc compiles src/server.ts -> dist/server.js (which boots the app).
-import app from '../dist/server';
+// Vercel serverless entrypoint.
+// The project is built with `npm run build` -> tsc -> dist/server.js
+// We require the built CJS bundle and forward every request to the Express app.
+const { createApp } = require('../dist/app');
 
-export default app;
+const app = createApp();
+
+module.exports = app;
+module.exports.default = app;
