@@ -1,0 +1,81 @@
+{
+  "info": {
+    "name": "GearUp API",
+    "description": "GearUp - Rent Sports & Outdoor Gear Instantly",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:5000" },
+    { "key": "token", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        { "name": "Register Customer", "request": { "method": "POST", "header": [{"key":"Content-Type","value":"application/json"}], "url": {"raw": "{{baseUrl}}/api/auth/register","host":["{{baseUrl}}"],"path":["api","auth","register"]}, "body": {"mode":"raw","raw":"{\"name\":\"Jane Customer\",\"email\":\"jane@example.com\",\"password\":\"Password123\",\"role\":\"CUSTOMER\"}"} } },
+        { "name": "Register Provider", "request": { "method": "POST", "header": [{"key":"Content-Type","value":"application/json"}], "url": {"raw": "{{baseUrl}}/api/auth/register","host":["{{baseUrl}}"],"path":["api","auth","register"]}, "body": {"mode":"raw","raw":"{\"name\":\"Bob Provider\",\"email\":\"bob@example.com\",\"password\":\"Password123\",\"role\":\"PROVIDER\"}"} } },
+        { "name": "Login", "request": { "method": "POST", "header": [{"key":"Content-Type","value":"application/json"}], "url": {"raw": "{{baseUrl}}/api/auth/login","host":["{{baseUrl}}"],"path":["api","auth","login"]}, "body": {"mode":"raw","raw":"{\"email\":\"admin@gearup.com\",\"password\":\"Admin@12345\"}"} } },
+        { "name": "Get Me", "request": { "method": "GET", "header": [{"key":"Authorization","value":"Bearer {{token}}"}], "url": {"raw": "{{baseUrl}}/api/auth/me","host":["{{baseUrl}}"],"path":["api","auth","me"]} } }
+      ]
+    },
+    {
+      "name": "Categories",
+      "item": [
+        { "name": "List", "request": { "method": "GET", "url": {"raw": "{{baseUrl}}/api/categories","host":["{{baseUrl}}"],"path":["api","categories"]} } },
+        { "name": "Create", "request": { "method": "POST", "header": [{"key":"Content-Type","value":"application/json"},{"key":"Authorization","value":"Bearer {{token}}"}], "url": {"raw": "{{baseUrl}}/api/categories","host":["{{baseUrl}}"],"path":["api","categories"]}, "body": {"mode":"raw","raw":"{\"name\":\"Climbing\",\"slug\":\"climbing\"}"} } }
+      ]
+    },
+    {
+      "name": "Gear",
+      "item": [
+        { "name": "List", "request": { "method": "GET", "url": {"raw": "{{baseUrl}}/api/gear?page=1&limit=20","host":["{{baseUrl}}"],"path":["api","gear"],"query":[{"key":"page","value":"1"},{"key":"limit","value":"20"}]} } },
+        { "name": "Get", "request": { "method": "GET", "url": {"raw": "{{baseUrl}}/api/gear/:id","host":["{{baseUrl}}"],"path":["api","gear",":id"]} } }
+      ]
+    },
+    {
+      "name": "Provider",
+      "item": [
+        { "name": "My Gear", "request": { "method": "GET", "header": [{"key":"Authorization","value":"Bearer {{token}}"}], "url": {"raw": "{{baseUrl}}/api/provider/gear","host":["{{baseUrl}}"],"path":["api","provider","gear"]} } },
+        { "name": "Add Gear", "request": { "method": "POST", "header": [{"key":"Content-Type","value":"application/json"},{"key":"Authorization","value":"Bearer {{token}}"}], "url": {"raw": "{{baseUrl}}/api/provider/gear","host":["{{baseUrl}}"],"path":["api","provider","gear"]}, "body": {"mode":"raw","raw":"{\"name\":\"Kayak\",\"description\":\"Inflatable kayak\",\"brand\":\"SeaPro\",\"pricePerDay\":40,\"stock\":3,\"categoryId\":\"CATEGORY_ID\"}"} } },
+        { "name": "Update Gear", "request": { "method": "PUT", "header": [{"key":"Content-Type","value":"application/json"},{"key":"Authorization","value":"Bearer {{token}}"}], "url": {"raw": "{{baseUrl}}/api/provider/gear/:id","host":["{{baseUrl}}"],"path":["api","provider","gear",":id"]} } },
+        { "name": "Delete Gear", "request": { "method": "DELETE", "header": [{"key":"Authorization","value":"Bearer {{token}}"}], "url": {"raw": "{{baseUrl}}/api/provider/gear/:id","host":["{{baseUrl}}"],"path":["api","provider","gear",":id"]} } },
+        { "name": "Provider Orders", "request": { "method": "GET", "header": [{"key":"Authorization","value":"Bearer {{token}}"}], "url": {"raw": "{{baseUrl}}/api/rentals/provider/orders","host":["{{baseUrl}}"],"path":["api","rentals","provider","orders"]} } }
+      ]
+    },
+    {
+      "name": "Rentals",
+      "item": [
+        { "name": "Create", "request": { "method": "POST", "header": [{"key":"Content-Type","value":"application/json"},{"key":"Authorization","value":"Bearer {{token}}"}], "url": {"raw": "{{baseUrl}}/api/rentals","host":["{{baseUrl}}"],"path":["api","rentals"]}, "body": {"mode":"raw","raw":"{\"startDate\":\"2026-08-01\",\"endDate\":\"2026-08-05\",\"items\":[{\"gearItemId\":\"GEAR_ID\",\"quantity\":1}]}"} } },
+        { "name": "My Rentals", "request": { "method": "GET", "header": [{"key":"Authorization","value":"Bearer {{token}}"}], "url": {"raw": "{{baseUrl}}/api/rentals","host":["{{baseUrl}}"],"path":["api","rentals"]} } },
+        { "name": "Get", "request": { "method": "GET", "header": [{"key":"Authorization","value":"Bearer {{token}}"}], "url": {"raw": "{{baseUrl}}/api/rentals/:id","host":["{{baseUrl}}"],"path":["api","rentals",":id"]} } },
+        { "name": "Update Status", "request": { "method": "PATCH", "header": [{"key":"Content-Type","value":"application/json"},{"key":"Authorization","value":"Bearer {{token}}"}], "url": {"raw": "{{baseUrl}}/api/rentals/:id","host":["{{baseUrl}}"],"path":["api","rentals",":id"]}, "body": {"mode":"raw","raw":"{\"status\":\"CONFIRMED\"}"} } }
+      ]
+    },
+    {
+      "name": "Payments",
+      "item": [
+        { "name": "Create Stripe Session", "request": { "method": "POST", "header": [{"key":"Content-Type","value":"application/json"},{"key":"Authorization","value":"Bearer {{token}}"}], "url": {"raw": "{{baseUrl}}/api/payments/create","host":["{{baseUrl}}"],"path":["api","payments","create"]}, "body": {"mode":"raw","raw":"{\"rentalOrderId\":\"ORDER_ID\",\"method\":\"STRIPE\"}"} } },
+        { "name": "Confirm (browser/webhook)", "request": { "method": "GET", "url": {"raw": "{{baseUrl}}/api/payments/confirm?session_id=cs_test_...","host":["{{baseUrl}}"],"path":["api","payments","confirm"],"query":[{"key":"session_id","value":"cs_test_..."}]} } },
+        { "name": "My Payments", "request": { "method": "GET", "header": [{"key":"Authorization","value":"Bearer {{token}}"}], "url": {"raw": "{{baseUrl}}/api/payments","host":["{{baseUrl}}"],"path":["api","payments"]} } },
+        { "name": "Get Payment", "request": { "method": "GET", "header": [{"key":"Authorization","value":"Bearer {{token}}"}], "url": {"raw": "{{baseUrl}}/api/payments/:id","host":["{{baseUrl}}"],"path":["api","payments",":id"]} } }
+      ]
+    },
+    {
+      "name": "Reviews",
+      "item": [
+        { "name": "Create", "request": { "method": "POST", "header": [{"key":"Content-Type","value":"application/json"},{"key":"Authorization","value":"Bearer {{token}}"}], "url": {"raw": "{{baseUrl}}/api/reviews","host":["{{baseUrl}}"],"path":["api","reviews"]}, "body": {"mode":"raw","raw":"{\"gearItemId\":\"GEAR_ID\",\"rating\":5,\"comment\":\"Great gear!\"}"} } },
+        { "name": "List for Gear", "request": { "method": "GET", "url": {"raw": "{{baseUrl}}/api/reviews/gear/:gearItemId","host":["{{baseUrl}}"],"path":["api","reviews","gear",":gearItemId"]} } }
+      ]
+    },
+    {
+      "name": "Admin",
+      "item": [
+        { "name": "Stats", "request": { "method": "GET", "header": [{"key":"Authorization","value":"Bearer {{token}}"}], "url": {"raw": "{{baseUrl}}/api/admin/stats","host":["{{baseUrl}}"],"path":["api","admin","stats"]} } },
+        { "name": "List Users", "request": { "method": "GET", "header": [{"key":"Authorization","value":"Bearer {{token}}"}], "url": {"raw": "{{baseUrl}}/api/admin/users","host":["{{baseUrl}}"],"path":["api","admin","users"]} } },
+        { "name": "Update User Status", "request": { "method": "PATCH", "header": [{"key":"Content-Type","value":"application/json"},{"key":"Authorization","value":"Bearer {{token}}"}], "url": {"raw": "{{baseUrl}}/api/admin/users/:id","host":["{{baseUrl}}"],"path":["api","admin","users",":id"]}, "body": {"mode":"raw","raw":"{\"status\":\"SUSPENDED\"}"} } },
+        { "name": "All Gear", "request": { "method": "GET", "header": [{"key":"Authorization","value":"Bearer {{token}}"}], "url": {"raw": "{{baseUrl}}/api/admin/gear","host":["{{baseUrl}}"],"path":["api","admin","gear"]} } },
+        { "name": "All Rentals", "request": { "method": "GET", "header": [{"key":"Authorization","value":"Bearer {{token}}"}], "url": {"raw": "{{baseUrl}}/api/admin/rentals","host":["{{baseUrl}}"],"path":["api","admin","rentals"]} } }
+      ]
+    }
+  ]
+}
