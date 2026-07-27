@@ -1,0 +1,164 @@
+// GearUp Prisma Schema
+// Database: PostgreSQL
+// Models: User, Category, GearItem, RentalOrder, RentalOrderItem, Payment, Review
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  CUSTOMER
+  PROVIDER
+  ADMIN
+}
+
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+}
+
+enum OrderStatus {
+  PLACED
+  CONFIRMED
+  PAID
+  PICKED_UP
+  RETURNED
+  CANCELLED
+}
+
+enum PaymentMethod {
+  STRIPE
+  SSLCOMMERZ
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
+
+model User {
+  id           String     @id @default(cuid())
+  name         String
+  email        String     @unique
+  password     String
+  role         Role
+  status       UserStatus @default(ACTIVE)
+  phone        String?
+  address      String?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  gearItems    GearItem[]      @relation("ProviderGear")
+  rentals      RentalOrder[]   @relation("CustomerRentals")
+  reviews      Review[]
+}
+
+model Category {
+  id        String     @id @default(cuid())
+  name      String     @unique
+  slug      String     @unique
+  createdAt DateTime   @default(now())
+
+  gearItems GearItem[]
+}
+
+model GearItem {
+  id            String     @id @default(cuid())
+  name          String
+  description   String
+  brand         String
+  pricePerDay   Float
+  stock         Int        @default(1)
+  isAvailable   Boolean    @default(true)
+  images        String[]   @default([])
+  specifications Json?     // flexible key-value specs
+  providerId    String
+  categoryId    String
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  provider      User       @relation("ProviderGear", fields: [providerId], references: [id], onDelete: Cascade)
+  category      Category   @relation(fields: [categoryId], references: [id])
+  orderItems    RentalOrderItem[]
+  reviews       Review[]
+
+  @@index([categoryId])
+  @@index([providerId])
+  @@index([brand])
+}
+
+model RentalOrder {
+  id            String         @id @default(cuid())
+  customerId    String
+  startDate     DateTime
+  endDate       DateTime
+  totalAmount   Float
+  status        OrderStatus    @default(PLACED)
+  notes         String?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  customer      User           @relation("CustomerRentals", fields: [customerId], references: [id], onDelete: Cascade)
+  items         RentalOrderItem[]
+  payment       Payment?
+
+  @@index([customerId])
+  @@index([status])
+}
+
+model RentalOrderItem {
+  id            String      @id @default(cuid())
+  orderId       String
+  gearItemId    String
+  quantity      Int         @default(1)
+  pricePerDay   Float       // snapshot at order time
+  days          Int         // number of days
+
+  order         RentalOrder @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  gearItem      GearItem    @relation(fields: [gearItemId], references: [id])
+
+  @@index([orderId])
+  @@index([gearItemId])
+}
+
+model Payment {
+  id              String        @id @default(cuid())
+  rentalOrderId   String        @unique
+  userId          String
+  amount          Float
+  method          PaymentMethod
+  provider        String        // 'stripe' | 'sslcommerz'
+  transactionId   String?       @unique
+  status          PaymentStatus @default(PENDING)
+  paidAt          DateTime?
+  rawResponse     Json?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  rentalOrder     RentalOrder   @relation(fields: [rentalOrderId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([status])
+}
+
+model Review {
+  id          String   @id @default(cuid())
+  rating      Int
+  comment     String
+  userId      String
+  gearItemId  String
+  createdAt   DateTime @default(now())
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  gearItem    GearItem @relation(fields: [gearItemId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, gearItemId])
+  @@index([gearItemId])
+}
