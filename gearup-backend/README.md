@@ -32,21 +32,19 @@ npm run dev
 
 Server: `http://localhost:5000`
 
-## Deploy to Vercel
+## Deploy to Render
 
 1. Push to GitHub.
-2. Vercel → **New Project** → import repo.
-3. Set **Root Directory** to `gearup-backend`.
-4. Add environment variables: `DATABASE_URL`, `JWT_SECRET`, `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `BASE_URL`, `ADMIN_EMAIL`, `ADMIN_PASSWORD`, `ADMIN_NAME`.
-5. After first deploy, run the seed once via Vercel CLI:
+2. Render → **New** → **Blueprint** → connect repo (uses `render.yaml` at repo root).
+3. Render auto-creates a PostgreSQL database and a web service.
+4. Add secrets in the web service env: `DATABASE_URL` (from the created DB), `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `BASE_URL`.
+5. After first deploy, run the seed from the **Render Shell**:
    ```
-   vercel env pull .env.vercel
-   npx prisma db push
    npm run seed
    ```
-6. Live URL: `https://your-app.vercel.app`
+6. Live URL: `https://gearup-backend.onrender.com`
 
-> Use a hosted Postgres (Neon, Supabase, Render Postgres, Vercel Postgres).
+> Free tier Postgres on Render expires after 90 days. For long-lived data use Neon or Supabase.
 
 ## Admin Credentials
 

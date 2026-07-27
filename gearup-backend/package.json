@@ -12,6 +12,7 @@
     "prisma:push": "prisma db push",
     "prisma:studio": "prisma studio",
     "postinstall": "prisma generate",
+    "start": "node dist/server.js",
     "seed": "tsx prisma/seed.ts",
     "lint": "echo \"No linter configured\"",
     "typecheck": "tsc --noEmit"
